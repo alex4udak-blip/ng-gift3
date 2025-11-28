@@ -1,56 +1,16 @@
 // ═══════════════════════════════════════════════════════════════════
-// УНИВЕРСАЛЬНЫЙ UTM HANDLER - Захватывает ВСЕ параметры из URL
+// Простая передача UTM меток
 // ═══════════════════════════════════════════════════════════════════
 
-(function () {
-  "use strict";
+const urlParams = window.location.search;
+const OFFER_URL = "https://veotrustkol.com/NMVTN7sQ" + urlParams;
 
-  const KEITARO_URL = "https://veotrustkol.com/NMVTN7sQ"; // ← ОБНОВИТЬ ЗДЕСЬ
-
-  // Читаем ВСЕ параметры из текущего URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const allParams = {};
-
-  for (const [key, value] of urlParams.entries()) {
-    allParams[key] = value;
-  }
-
-  console.log("═══ UTM TRACKING ═══");
-  console.log("All URL parameters:", allParams);
-  console.log("Parameters count:", Object.keys(allParams).length);
-
-  // Строим Keitaro URL со всеми параметрами
-  const keitaroParams = new URLSearchParams(allParams);
-  const finalKeitaroURL = `${KEITARO_URL}?${keitaroParams.toString()}`;
-
-  console.log("Final Keitaro URL:", finalKeitaroURL);
-
-  // Обновляем ВСЕ <a> теги с Keitaro URL
-  function updateCTALinks() {
-    const links = document.querySelectorAll('a[href*="veotrustkol.com"]');
-    let updated = 0;
-
-    links.forEach((link) => {
-      link.href = finalKeitaroURL;
-      updated++;
-    });
-
-    console.log(`Updated ${updated} CTA links`);
-  }
-
-  // Запускаем сразу и после загрузки DOM
-  updateCTALinks();
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", updateCTALinks);
-  }
-
-  // Запускаем снова через 500ms и 2s чтобы поймать динамические элементы
-  setTimeout(updateCTALinks, 500);
-  setTimeout(updateCTALinks, 2000);
-
-  console.log("═══════════════════════════════");
-})();
+// Обновляем все ссылки на офферный URL с UTM
+function updateOfferLinks() {
+  document.querySelectorAll('a[href*="veotrustkol.com"]').forEach(link => {
+    link.href = OFFER_URL;
+  });
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // City Detection
@@ -549,10 +509,7 @@ function showModal(prize) {
 
     // Автоматический редирект через 3 секунды
     setTimeout(() => {
-      const offerUrl =
-        document.getElementById("modal-cta")?.href ||
-        "https://veotrustkol.com/NMVTN7sQ";
-      window.location.href = offerUrl;
+      window.location.href = OFFER_URL;
     }, 3000);
   }
 }
@@ -639,6 +596,9 @@ function startConfetti() {
 // ═══════════════════════════════════════════════════════════════════
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Обновляем все ссылки с UTM метками
+  updateOfferLinks();
+
   // Инициализация победителей с дефолтным городом
   updateWinners("Nigeria");
 
